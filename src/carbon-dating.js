@@ -1,8 +1,5 @@
 const { NotImplementedError } = require('../extensions/index.js');
 
-const MODERN_ACTIVITY = 15;
-const HALF_LIFE_PERIOD = 5730;
-
 /**
  * Determine the age of archeological find by using
  * given MODERN_ACTIVITY and HALF_LIFE_PERIOD values
@@ -18,20 +15,19 @@ const HALF_LIFE_PERIOD = 5730;
  *
  */
 
+ const MODERN_ACTIVITY = 15;
+ const HALF_LIFE_PERIOD = 5730;
+
 function dateSample(sampleActivity) {
   if (typeof(sampleActivity) != 'string') return false;
 
-  let parsedString = parseFloat(sampleActivity);
-  if (isNaN(parsedString)) {
-    return false;
-  }
-  if (parsedString > MODERN_ACTIVITY || parsedString <= 0) {
-    return false;
-  }
-  const a = 0.693 * 100000 / HALF_LIFE_PERIOD / 100000;
-  let log = Math.log10(MODERN_ACTIVITY / parsedString);
+  sampleActivity = +sampleActivity;
+  if (isNaN(sampleActivity) || 
+      sampleActivity <= 0 || 
+      sampleActivity > MODERN_ACTIVITY) return false;
 
-  return Math.floor(log / a);
+  const k = 0.693 / HALF_LIFE_PERIOD;
+  return Math.ceil( Math.log( MODERN_ACTIVITY / sampleActivity ) / k );
 }
 
 module.exports = {
